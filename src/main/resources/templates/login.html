@@ -2,16 +2,37 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>ass</title>
+    <title>Login</title>
 </head>
 <body>
-  <form action = "${/login}" method = "post">
-      <div><input type = "text" name = "username"/></div> <!--move these to the center-->
-      <div><input type = "text" name = "password"/></div>
-      <div><input type = "submit" value = "Sign in"></div>>
-  </form>
-  <div id = "botRCorner">
-      <a href="/register" >Register</a>
-  </div> <!--Move this to bottom corner-->
+    <div th:if = "${param.successful}">
+        Successful Register
+    </div>
+    <form th:action = "@{/login}" method = "post">
+        <div>
+            Please Login
+        </div>
+        <div>
+            UserName
+        </div>
+        <div><input type = "text" name = "username"/></div> <!--move these to the center-->
+        <div th:if = "${param.error}">
+            Invalid username or password
+        </div>
+        <div>
+            Password
+        </div>
+        <div th:if = "${param.logout}">
+            You have been logged out
+        </div>
+        <div><input type = "text" name = "password"/></div>
+        <div><input type = "submit" value = "Sign in"></div>
+    </form>
+
+    <div id = "botRCorner">
+        <a href="/register" >Register</a>
+    </div> <!--Move this to bottom corner-->
+
+
 </body>
 </html>

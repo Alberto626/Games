@@ -6,7 +6,8 @@ import com.example.Ships.User;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-
+//deprecated, this is more for a learning process about autowired and dependency injection
+@Deprecated
 @Repository
 public class SimpleRepo implements TutorialRepo{
 
@@ -21,9 +22,9 @@ public class SimpleRepo implements TutorialRepo{
     }
 
     @Override
-    public int saveUser(User user) {//use a prepared statement
+    public Boolean saveUser(User user) {//use a prepared statement
         String query = "insert into ";
-        return 0;
+        return true;
     }
 
     @Override

@@ -12,8 +12,4 @@ public class LoginController {
     public String login() {
         return "login";
     }
-    @PostMapping(path = "")
-    public @ResponseBody String logUserIn() {
-        return "yes this works";
-    }
 }
