@@ -1,8 +1,11 @@
-package com.example.Ships.Login;
+package com.example.Ships.Login.Controllers;
 
 import com.example.Ships.Service.UserService;
 import com.example.Ships.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -17,9 +20,15 @@ public class RegisterController {
     @Autowired
     private UserService userService;
     @GetMapping()
-    public String register(@ModelAttribute User user, Model model) {
-        model.addAttribute(user);
-        return "register";
+    public String register(@ModelAttribute User user, Model model) { //change this to work with spring security
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication == null || authentication instanceof AnonymousAuthenticationToken) {
+            model.addAttribute(user);
+            return "register";
+
+        }
+        return "redirect:/";
+
     }
     @PostMapping()
     public String save(@Valid User user, BindingResult bindingResult)

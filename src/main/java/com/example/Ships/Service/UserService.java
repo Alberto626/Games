@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserService {
+public class UserService { //grab from my repository and to be used in my register controller for validation.
     private final SimpleRepo2 repo;
     @Autowired
     public UserService(SimpleRepo2 repo) {
@@ -14,7 +14,7 @@ public class UserService {
     public boolean doesAccountExist(String username) {
         return repo.doesUserNameExist(username);
     }
-    public void register(User user) {
+    public void register(User user) {//register account to database using JDBC template
         repo.saveUser(user);
 
     }

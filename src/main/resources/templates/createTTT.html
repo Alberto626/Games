@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Tic Tac Toe Creation</title>
+</head>
+<body>
+    <div>
+        <div>New Game</div>
+        <div>
+            <form th:action = "@{/createTTT}" method = "post" th:object = ${TTTGame}>
+                <div>
+                <select th:field = "*{gameType}">
+                    <option th:each= "type : ${types}"
+                            th:value = "${type}"
+                            th:text = "${type}"></option>
+                </select>
+                </div>
+                <div>
+                <select th:field = "*{firstPlayerPiece}">
+                    <option th:each = "piece : ${pieces}"
+                            th:value = "${piece}"
+                            th:text = "${piece}"></option>
+                </select>
+                </div>
+                <button type = "submit">
+                    Create Game
+                </button>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>

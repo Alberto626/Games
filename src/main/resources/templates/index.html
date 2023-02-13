@@ -8,11 +8,23 @@
 </head>
 <body>
     <div>
+        <form th:action = "@{/create_game}" method = "post">
+            <div>
+                <select name = "game" id = "game" th:value = "game">
+                    <option value = "TicTacToe">Tic Tac Toe</option>
+                   <!-- <option value = "Battle Ships">Battle Ships</option> This is for a future feature-->
+                </select>
+
+            </div>
+            <div>
+                <button type = "submit">New Game</button>
+            </div>
+        </form>
+    </div>
+
+    <div>
         <form th:action="@{/logout}" method="post">
             <input type="submit" value="Sign Out"/>
-        <div>
-            <a href = "/register">Create Account</a>
-        </div>
         </form>
     </div>
 </body>

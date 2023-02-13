@@ -19,7 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class AppConfig {
 
     @Autowired
-    Environment environment;
+    Environment environment; // check applications.properties files
 
     private final String URL = "spring.datasource.url";
     private final String USER = "spring.datasource.username";
@@ -27,7 +27,7 @@ public class AppConfig {
     private final String PASSWORD = "spring.datasource.password";
 
     @Bean
-    DataSource dataSource() {
+    DataSource dataSource() {// grab details to be able to connect to my database, then use those parameters to use JDBC template, not JDBC
         DriverManagerDataSource driverManagerDataSource = new DriverManagerDataSource();
         driverManagerDataSource.setUrl(environment.getProperty(URL));
         driverManagerDataSource.setUsername(environment.getProperty(USER));
@@ -37,11 +37,11 @@ public class AppConfig {
     }
 
     @Bean
-    JdbcTemplate template() {
+    JdbcTemplate template() { //a way of to connect to database and execute sql queries
         return new JdbcTemplate(dataSource());
     }
     @Bean
     PasswordEncoder encoder() {
         return new BCryptPasswordEncoder();
-    }
+    }// a hashing algorithm to turn prevent plain text passwords to gibberish in database,
 }

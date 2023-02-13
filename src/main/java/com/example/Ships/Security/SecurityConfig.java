@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 
 import javax.annotation.Resource;
 
@@ -22,25 +23,36 @@ public class SecurityConfig {
     private PasswordEncoder bCrypt;//check appconfig file, same encoder
 
     @Bean
-    public DaoAuthenticationProvider authProvider() {
+    public HttpSessionEventPublisher httpSessionEventPublisher() {
+        return new HttpSessionEventPublisher();
+    }
+
+    @Bean
+    public DaoAuthenticationProvider authProvider() {//a way of processing a specific type of authentication, I gave my userdetailsService to tell it to process it my way
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(userDetailsService);
         authProvider.setPasswordEncoder(bCrypt);
         return authProvider;
     }
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {//todo fix this, securityFilterchain cannot be with
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {//type of configuration for authentication
         http
                 .authorizeHttpRequests((requests) -> requests
-                        .antMatchers("/register/**", "/login").permitAll()
+                        .antMatchers("/register", "/login").permitAll() // prevent access to the website without a login
                         .anyRequest().authenticated()
                 )
-                .authenticationProvider(authProvider())
-                .formLogin((form) -> form
+
+                .authenticationProvider(authProvider())// give spring security my custom way of authenticating
+                .formLogin((form) -> form //use my login page, but use springs security authentication.
                         .loginPage("/login")
                         .permitAll()
                 )
-                .logout((logout) -> logout.permitAll());
+                .logout((logout) -> logout.permitAll())
+                .sessionManagement(session -> session //prevent multiple sessions of a single user, no one user in multiple locations
+                        .maximumSessions(1)
+                        .maxSessionsPreventsLogin(true)
+                );
+
 
         return http.build();
     }

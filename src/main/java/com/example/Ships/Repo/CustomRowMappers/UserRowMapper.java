@@ -7,10 +7,10 @@ import org.springframework.jdbc.core.RowMapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class UserRowMapper implements RowMapper<User> {
+public class UserRowMapper implements RowMapper<User> { //fetch records in the database
 
     @Override
-    public User mapRow(ResultSet rs, int rowNum) throws SQLException {
+    public User mapRow(ResultSet rs, int rowNum) throws SQLException {//this only returns one record
         User user = new User();
         user.setId(rs.getLong("Userid"));
         user.setUsername(rs.getString("UserName"));
