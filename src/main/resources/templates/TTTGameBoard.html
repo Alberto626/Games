@@ -6,23 +6,29 @@
     <title>Title</title>
 </head>
 <body>
-<table>
+<table width = "500px" height = "500px" id = "tableID">
     <tr>
-        <th>1</th>
-        <th>2</th>
-        <th>3</th>
+        <td>1</td>
+        <td>2</td>
+        <td>3</td>
     </tr>
     <tr>
-        <th>4</th>
-        <th>5</th>
-        <th>6</th>
+        <td>4</td>
+        <td>5</td>
+        <td>6</td>
     </tr>
     <tr>
-        <th>7</th>
-        <th>8</th>
-        <th>9</th>
+        <td>7</td>
+        <td>8</td>
+        <td>9</td>
     </tr>
 </table>
-
+ <script type="text/javascript" th:src = "@{/js/world.js}">
+ </script>
 </body>
+<style>
+    table, td {
+    border: 1px solid black;
+    }
+</style>
 </html>

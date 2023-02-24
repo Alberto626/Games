@@ -1,6 +1,6 @@
 package com.example.Ships.Repo.CustomRowMappers;
 
-import com.example.Ships.Game.TTTGame;
+import com.example.Ships.Game.Entities.TTTGame;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;

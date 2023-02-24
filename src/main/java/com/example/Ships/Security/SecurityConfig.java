@@ -51,7 +51,8 @@ public class SecurityConfig {
                 .sessionManagement(session -> session //prevent multiple sessions of a single user, no one user in multiple locations
                         .maximumSessions(1)
                         .maxSessionsPreventsLogin(true)
-                );
+                )
+                .csrf().disable();//TODO find a way to prevent fetch without disabling this
 
 
         return http.build();

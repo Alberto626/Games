@@ -1,6 +1,8 @@
 package com.example.Ships.Repo;
 
-import com.example.Ships.Game.TTTGame;
+import com.example.Ships.Game.Entities.Move;
+import com.example.Ships.Game.Entities.TTTGame;
+import com.example.Ships.Repo.CustomRowMappers.MoveRowMapper;
 import com.example.Ships.Repo.CustomRowMappers.TTTRowMapper;
 import com.example.Ships.Repo.CustomRowMappers.UserRowMapper;
 import com.example.Ships.User;
@@ -85,14 +87,68 @@ public class SimpleRepo2 implements TutorialRepo{
         String sql = "Select * from ttt_game where FirstPlayerID = ? order by id desc limit 1;";
         return template.queryForObject(sql, new Object[]{tttGame.getFirstPlayerID()}, new TTTRowMapper());
     }
-    public TTTGame findTTTGameByID() {
-        return null;
+    public TTTGame findTTTGameByID(long gameID) { //TODO fix name to GET not find
+        String sql = "Select * from ttt_game where id = ?";
+        try{
+            return template.queryForObject(sql, new Object[]{gameID}, new TTTRowMapper());
+        }
+        catch(EmptyResultDataAccessException e) {
+            return null;
+        }
     }
-    public List<TTTGame> getAllGames() {
-        return null;
+    public List<TTTGame> getGamesByPlayerID(Long playerID) {//this can return an empty list
+        String sql = "Select * from ttt_game where FirstPlayerID = ?";
+        List<TTTGame> x = template.query(sql,new Object[]{playerID}, new TTTRowMapper());
+        return x;
     }
-    public List<TTTGame> getGamesByID() {
-        return null;
+    public void saveMove(Move move) {
+        String sql = "insert into moves(PlayerID, GameID, BoardRow, BoardColumn) values(?,?,?,?)";
+        template.execute(sql, new PreparedStatementCallback<>() {
+            @Override
+            public Boolean doInPreparedStatement(PreparedStatement ps) throws SQLException, DataAccessException {
+                ps.setLong(1, move.getPlayerID());
+                ps.setLong(2, move.getGameID());
+                ps.setInt(3, move.getBoardRow());
+                ps.setInt(4, move.getBoardColumn());
+                return ps.execute();
+            }
+
+        });
+    }
+    public void saveBOTMove(Move move) {
+        String sql = "insert into moves(GameID, BoardRow, BoardColumn) values(?,?,?)";
+        template.execute(sql, new PreparedStatementCallback<>() {
+            @Override
+            public Boolean doInPreparedStatement(PreparedStatement ps) throws SQLException, DataAccessException {
+                ps.setLong(1, move.getGameID());
+                ps.setInt(2, move.getBoardRow());
+                ps.setInt(3, move.getBoardColumn());
+                return ps.execute();
+            }
+
+        });
+    }
+    public void conludeTTTGame() {//TODO, update the game status of the game to conluded meaning no more moves and be implemented
+
+    }
+    //USED FOR DIFFERENT PURPOSE, isnt used anymore
+    public List<Move> getAllMovesByGameID(long gameID) {
+        String sql = "Select * from moves where GameID = ?";
+        List<Move> x = template.query(sql, new Object[]{gameID}, new MoveRowMapper());
+        return x;
+    }
+    public boolean doesMoveExist(int row, int col, long gameID) {
+        try {
+            String sql = "Select * from moves where BoardRow = ? AND BoardColumn = ? AND id = ?";
+            template.queryForObject(sql, new Object[]{row, col, gameID}, new MoveRowMapper()); //this is a prepared statement
+        }
+        catch (EmptyResultDataAccessException e) {//if query doesn't return anything
+            return false;
+        }
+        return true;
+    }
+    public void updateTTTGameWithNewPlayer() {//TODO add second player
+        
     }
     public String toString() {
         return "Repo works";

@@ -1,4 +1,4 @@
-package com.example.Ships.Game;
+package com.example.Ships.Game.Entities;
 
 public class TTTGame {//TODO, add gametype and status to be ENUMS LATER
     private long id;
@@ -7,7 +7,7 @@ public class TTTGame {//TODO, add gametype and status to be ENUMS LATER
     private String created;
     private String gameType; //BOT, PVP
     private char firstPlayerPiece;
-    private String gameStatus;//IN PROGRESS, HOLD
+    private String gameStatus;//IN PROGRESS, HOLD, ENDED
 
     public String getGameStatus() {
         return gameStatus;
