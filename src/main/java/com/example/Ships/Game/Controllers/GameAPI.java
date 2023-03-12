@@ -1,5 +1,7 @@
 package com.example.Ships.Game.Controllers;
 
+import com.example.Ships.Game.APIObjects.ClosedTTTPVPMatch;
+import com.example.Ships.Game.APIObjects.ExistingTTTGame;
 import com.example.Ships.Game.Entities.Move;
 import com.example.Ships.Game.Entities.TTTGame;
 import com.example.Ships.Repo.SimpleRepo2;
@@ -29,5 +31,15 @@ public class GameAPI {
     public List<Move> gameMoves(@RequestParam(required = true, name = "id") String id) {
         int gameID = Integer.parseInt(id);//TODO fix this later for whole numbers and very large numbers
         return repo.getAllMovesByGameID(gameID);
+    }
+    @GetMapping("/OpenGames")//
+    public List<ExistingTTTGame> openGames() {
+        MyUserPrincipal user = (MyUserPrincipal)(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        return repo.getOpenPvPGames(user.getID());
+    }
+    @GetMapping("/test")//THIS IS PURELY FOR TESTING
+    public List<ClosedTTTPVPMatch> test() {
+        MyUserPrincipal user = (MyUserPrincipal)(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        return repo.getClosedPVPGamesByPlayerID(user.getID());
     }
 }

@@ -1,6 +1,6 @@
 package com.example.Ships.Game.Controllers;
 
-import com.example.Ships.Game.TTTWinCondition;
+import com.example.Ships.Game.WinCondition.TTTWinCondition;
 import com.example.Ships.Game.Entities.Move;
 import com.example.Ships.Game.Entities.TTTGame;
 import com.example.Ships.Repo.SimpleRepo2;
@@ -26,9 +26,6 @@ public class TTTBoardController {
     private SimpleRepo2 repo;
     @GetMapping()
     public String gameBoard( @PathVariable() String gameID) {//this id is the game id from the database
-        if(false) {//TODO if this is a pvp match with no second player, update the repo to to allow access
-
-        }
         if(!isNumeric(gameID) || !hasAccess(gameID)) {//check for validity, check if u have access to this game
             throw new AccessDeniedException("403 returned");
         }
@@ -67,6 +64,11 @@ public class TTTBoardController {
             //TODO add model object to display the game is conluded
             return "TTTGameBoard";
         }
+        if(tttGame.getGameStatus().equals("HOLD")) {
+            System.out.println("Cannot play without another Player");
+            //TODO add model object to display the game is hold until player joins
+            return "TTTGameBoard";
+        }
         if(rowID < 1 || rowID > 3 || colID < 1 || colID > 3) {//check for validity of move location
             System.out.println("invalid inputs");
             //TODO throw some error to say requestbody isnt valid
@@ -83,21 +85,37 @@ public class TTTBoardController {
             //TODO add some error saying its not the players turn yet
             return "TTTGameBoard";
         }
-        createMove(user, gameID2, colID, rowID, moves, tttGame);//create the move based on parameters given
+        createMove(user, gameID2, colID, rowID, moves, tttGame);//IMPORTANT: create the move based on parameters given
         moves = repo.getAllMovesByGameID(gameID2);//TODO, add later to list instead replacing entire list
         TTTWinCondition tttWinCondition = new TTTWinCondition(moves);
         if(tttWinCondition.isWinner()) {//check win condtion
+            repo.conludeTTTGame(gameID2);
             tttWinCondition.getWinner();//this is the character winner
-            //change the gamestatus to winner;
+            //TODO change the gamestatus to winner, AND update repo;
             //winner, 
             System.out.println("Winner");
             return "TTTGameBoard";
         }
+        if(tttGame.getGameType().equals("BOT")) {//check if this is a bot game if so create bot MOVE
+            createBotMove(moves, gameID2);
+            moves = repo.getAllMovesByGameID(gameID2);
+            tttWinCondition = new TTTWinCondition(moves);
+            if(tttWinCondition.isWinner()) {
+                repo.conludeTTTGame(gameID2);
+                tttWinCondition.getWinner();
+                //change the gamestatus to winner;
+                //winner, 
+                System.out.println(" BOT Winner");
+                return "TTTGameBoard";
+
+        }
+    }
         if(moves.size() == 9) {//tie
             return "TTTGameBoard";
-            //
+            //TODO change the status to CONCLUDED
         }
         return "TTTGameBoard";
+        
         //is cell available?
         //is it players turn
         //create move
@@ -111,23 +129,21 @@ public class TTTBoardController {
         newMove.setBoardColumn(colID);
         newMove.setBoardRow(rowID);
         repo.saveMove(newMove);//save move to db
-        if(tttGame.getGameType().equals("BOT")) {//stop the creation of a bot move is O has already won,
-            moves = repo.getAllMovesByGameID(gameID2);//this needs to get updated
-            System.out.println("Create Bot Move");
-            while(true) {//TODO this is more ai adaptability, WAY BEYOND Current scope
-                int col = (int)(Math.random()* 3) + 1;
-                int row = (int)(Math.random()* 3) + 1;
-                if(!doesMoveExistInCell(moves, row, col)) {
-                    Move botMove = new Move();
-                    botMove.setBoardColumn(col);
-                    botMove.setBoardRow(row);
-                    botMove.setGameID(gameID2);
-                    repo.saveBOTMove(botMove);
-                    break;
-                }           
+
+    }
+    public void createBotMove(List<Move> moves, long gameID2) {
+        while(true) {
+            int col = (int)(Math.random()* 3) + 1;
+            int row = (int)(Math.random()* 3) + 1;
+            if(!doesMoveExistInCell(moves, row, col)) {
+                Move botMove = new Move();
+                botMove.setBoardColumn(col);
+                botMove.setBoardRow(row);
+                botMove.setGameID(gameID2);
+                repo.saveBOTMove(botMove);
+                break;
             }
         }
-
     }
     public boolean doesMoveExistInCell(List<Move> moves, int rowID, int colID ) {
         for(int x = 0; x < moves.size(); x++) {

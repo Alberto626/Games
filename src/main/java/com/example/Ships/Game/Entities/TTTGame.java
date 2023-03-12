@@ -5,9 +5,9 @@ public class TTTGame {//TODO, add gametype and status to be ENUMS LATER
     private long firstPlayerID;
     private long secondPlayerID;//in database, this is nullable, but in entity null == 0
     private String created;
-    private String gameType; //BOT, PVP
+    private String gameType; //BOT, PVP TODO add enums for later
     private char firstPlayerPiece;
-    private String gameStatus;//IN PROGRESS, HOLD, ENDED
+    private String gameStatus;//IN PROGRESS, HOLD, CONCLUDED
 
     public String getGameStatus() {
         return gameStatus;

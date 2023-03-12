@@ -1,4 +1,4 @@
-package com.example.Ships.Game;
+package com.example.Ships.Game.WinCondition;
 
 import java.util.List;
 

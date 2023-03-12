@@ -6,11 +6,16 @@ for (var i = 0; i < table.rows.length; i++) {
             tableText(this);
          };
    }
+poll();
+function poll() {//continously call this function to display new moves when possible
+    displayMoves();
+    setTimeout(poll, 5000);//5 seconds
+}
 function tableText(tableCell) {//send a post request 
    let row = tableCell.parentNode.rowIndex + 1
    let col = tableCell.cellIndex + 1
 
-   alert(tableCell.cellIndex + 1 +  "col + " + (tableCell.parentNode.rowIndex + 1) + "row");
+   alert(col + 1 +  "col + " + (row + 1) + "row");
    fetch(window.location.href, {
       method: 'POST',
       credentials: 'include',
@@ -26,7 +31,6 @@ function tableText(tableCell) {//send a post request
    .then((response) => displayMoves())
 }
 async function displayMoves() {//fetch api and display to gameboard
-   let value
    var gameID = window.location.pathname.split('/')[2];//this is the gameid
    var url = "http://localhost:8080/game/Moves?id=" + gameID;
    const response = await fetch(url)

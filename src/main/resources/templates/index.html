@@ -4,6 +4,7 @@
       xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
     <meta charset="UTF-8">
+    <link th:href="@{css/right.css}" rel="stylesheet" />
     <title>Home</title>
 </head>
 <body>
@@ -27,5 +28,99 @@
             <input type="submit" value="Sign Out"/>
         </form>
     </div>
+    
+    <div class = "right">
+        <div><strong>Join Existing Game</strong><br>
+            <form th:action = "@{/}" method = "get">
+                <td>Name</td>
+                <td>Date</td>
+                <td>Status</td>
+                <button type = "submit" value = "Refresh">Refresh</button>
+            </form>
+        </div>
+        <div id = "ExistingGames">
+            <tr th:each = "ExistingTTTGame: ${openGames}">
+                <form th:action = @{/join} method = "post">
+                    <td th:text = "${ExistingTTTGame.username}"></td>
+                    <td th:text = "${ExistingTTTGame.created}"></td>
+                    <td th:text = "${ExistingTTTGame.gameStatus}"></td>
+                    <input type = "hidden" name = "gameID" th:value = "${ExistingTTTGame.id}"/>
+                    <td>
+                        <input type = "submit" value = "Join"/>
+                    </td>
+                </form>
+            </tr>
+
+        </div>
+        <div> <!--This will display games u have -->
+            <tr>
+                <Strong>Join Bot Games</Strong>
+            </tr>
+            <br>
+            <tr>
+                <td>Your Piece</td>
+                <td>Date Created</td>
+                <td>Game Status</td>
+            </tr>
+            <tr th:each = "TTTGame: ${botGames}">
+                <form th:action = "@{/TTT/} + ${TTTGame.id}">
+                    <td th:text = "${TTTGame.FirstPlayerPiece}"></td>
+                    <td th:text = "${TTTGame.Created}"></td>
+                    <td th:text = "${TTTGame.GameStatus}"></td>
+                    <td>
+                        <input type = "submit" value = "Join BOT"/>
+                    </td>
+                </form>
+
+            </tr>
+        </div>
+        <div>
+            <tr>
+                <Strong>Join Your PVP Games</Strong> <br>
+            </tr>
+            <tr>
+                <td>FirstPlayer,</td>
+                <td>SecondPlayer,</td>
+                <td>Date Created,</td>
+                <td>Game Status,</td>
+                <td>First Player Piece</td>
+            </tr>
+            <tr th:each = "ClosedTTTPVPMatch: ${closedPVPGames}">
+                <form th:action = "@{/TTT/} + ${ClosedTTTPVPMatch.gameID}">
+                    <td th:text = "${ClosedTTTPVPMatch.firstPlayer}"></td>
+                    <td th:text = "${ClosedTTTPVPMatch.secondPlayer}"></td>
+                    <td th:text = "${ClosedTTTPVPMatch.created}"></td>
+                    <td th:text = "${ClosedTTTPVPMatch.gameStatus}"></td>
+                    <td th:text = "${ClosedTTTPVPMatch.firstPlayerPiece}"></td>
+                    <td>
+                        <input type = "submit" value = "Join PVP"/>
+                    </td>
+                </form>
+        </div>
+
+        <div>
+            <tr>
+                <Strong>Awaiting Your Open PVP Games</Strong> <br>
+            </tr>
+            <tr>
+                <td>Created,</td>
+                <td>GameType,</td>
+                <td>Your Piece,</td>
+                <td>Game Status</td>
+            </tr>
+            <tr th:each = "TTTGame: ${yourOpenGames}">
+                <form th:action = "@{/TTT/} + ${TTTGame.id}">
+                    <td th:text = "${TTTGame.created}"></td>
+                    <td th:text = "${TTTGame.gameType}"></td>
+                    <td th:text = "${TTTGame.firstPlayerPiece}"></td>
+                    <td th:text = "${TTTGame.gameStatus}"></td>
+                    <td>
+                        <input type = "submit" value = "Join PVP"/>
+                    </td>
+                </form>
+        </div>
+
+    </div>
 </body>
+
 </html>

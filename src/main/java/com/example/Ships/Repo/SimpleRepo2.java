@@ -1,10 +1,10 @@
 package com.example.Ships.Repo;
 
+import com.example.Ships.Game.APIObjects.ClosedTTTPVPMatch;
+import com.example.Ships.Game.APIObjects.ExistingTTTGame;
 import com.example.Ships.Game.Entities.Move;
 import com.example.Ships.Game.Entities.TTTGame;
-import com.example.Ships.Repo.CustomRowMappers.MoveRowMapper;
-import com.example.Ships.Repo.CustomRowMappers.TTTRowMapper;
-import com.example.Ships.Repo.CustomRowMappers.UserRowMapper;
+import com.example.Ships.Repo.CustomRowMappers.*;
 import com.example.Ships.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -128,8 +128,9 @@ public class SimpleRepo2 implements TutorialRepo{
 
         });
     }
-    public void conludeTTTGame() {//TODO, update the game status of the game to conluded meaning no more moves and be implemented
-
+    public void conludeTTTGame(long tttGameID) {//TODO, update the game status of the game to conluded meaning no more moves and be implemented
+        String sql = "Update ttt_game set GameStatus = 'CONCLUDED' where id = ?";
+        template.update(sql, tttGameID);
     }
     //USED FOR DIFFERENT PURPOSE, isnt used anymore
     public List<Move> getAllMovesByGameID(long gameID) {
@@ -147,9 +148,48 @@ public class SimpleRepo2 implements TutorialRepo{
         }
         return true;
     }
-    public void updateTTTGameWithNewPlayer() {//TODO add second player
-        
+    public void updateTTTGameWithNewPlayer(long gameID, long playerID) {//TODO add second player
+        String sql = "Update ttt_game set SecondPlayerID = ?, GameStatus = 'IN PROGRESS' where id = ?";
+        template.update(sql, playerID, gameID);
     }
+    public List<ExistingTTTGame> getOpenPvPGames(long playerID) {//exclude your own
+        String sql = "select login.UserName, ttt_game.id, ttt_game.Created, ttt_game.GameStatus " +
+                "from login inner join ttt_game " +
+                "on login.userid = ttt_game.FirstPlayerID where GameStatus = 'HOLD' and " +
+                "GameType = 'PVP' AND SecondPlayerID is null and FirstPlayerID != ?";
+        return template.query(sql, new Object[]{playerID}, new ExistingTTTGameRowMapper());
+
+    }
+    public List<TTTGame> getAllBOTGamesbyPlayerID(long playerID) {
+        String sql = "select * from ttt_game where FirstPlayerID = ? AND GameType = 'BOT';";
+
+        return template.query(sql, new Object[]{playerID}, new TTTRowMapper());
+    }
+    public List<ClosedTTTPVPMatch> getClosedPVPGamesByPlayerID(long playerID) {
+        String sql = "select  t.id,\n" +
+                "\t\tt.Created,\n" +
+                "        t.FirstPlayerPiece,\n" +
+                "\t\tl1.UserName as FirstPlayer,\n" +
+                "\t\tl2.UserName as SecondPlayer,\n" +
+                "        t.GameStatus\n" +
+                "from ttt_game as t\n" +
+                "inner join login as l1\n" +
+                "on\n" +
+                "t.FirstPlayerID = l1.userid\n" +
+                "inner join login as l2 \n" +
+                "on \n" +
+                "t.SecondPlayerID = l2.Userid\n" +
+                "where t.GameType = 'PVP' and (t.FirstPlayerID = ? OR t.SecondPlayerID = ?);\n";
+
+        return template.query(sql, new Object[]{playerID, playerID}, new ClosedTTTPVPMatchRowMapper());
+    }
+    public List<TTTGame> getYourOpenPVPGamesByPlayerID(long playerID) {
+        String sql = "SELECT * FROM ttt_game\n" +
+                "where SecondPlayerID is Null and GameType = \"PVP\" AND FirstPlayerID = ?;";
+
+        return template.query(sql, new Object[]{playerID}, new TTTRowMapper());
+    }
+
     public String toString() {
         return "Repo works";
     }

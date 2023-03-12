@@ -27,6 +27,8 @@ public class TTTGameCreationController {
         List<String> types = new ArrayList<>();
         List<String> pieces = new ArrayList<>();
         types.add("BOT");
+        types.add("PVP");
+        //TODO add PVP later
         pieces.add("X");
         pieces.add("O");
         model.addAttribute("types", types);
@@ -38,7 +40,14 @@ public class TTTGameCreationController {
     public String createGame(@Valid TTTGame tttGame) {
         MyUserPrincipal user = (MyUserPrincipal)(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         tttGame.setFirstPlayerID(user.getID());
-        tttGame.setGameStatus("IN PROGRESS");//fix this to have enums instead of strings later
+        if(tttGame.getGameType().equals("PVP")) {//prevent play without an extra player
+            tttGame.setGameStatus("HOLD");
+
+        }
+        else {
+            tttGame.setGameStatus("IN PROGRESS");
+
+        }
         tttGame = repo.saveTTTGame(tttGame);
         System.out.println(tttGame.getGameType() + "  " + tttGame.getFirstPlayerPiece());
         if(tttGame.getFirstPlayerPiece() == 'O' && tttGame.getGameType().equals("BOT")) {//X goes first

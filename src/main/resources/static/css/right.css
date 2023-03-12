@@ -1,0 +1,8 @@
+.right {
+  border: 10px dashed lightblue;
+  border-radius: 5px;
+  background-color: lightyellow;
+  right: 0;
+  position: fixed;
+  top: 50px;
+}
