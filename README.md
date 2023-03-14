@@ -14,4 +14,5 @@ That is for a future game I want to implement, Tic tac Toe works on here
 * MySQL
 
 Was able to create login/register system using Spring Security
-PROVIDE @ PHOTOS 
+PROVIDE @ PHOTOS
+That is for a future game I want to implement
