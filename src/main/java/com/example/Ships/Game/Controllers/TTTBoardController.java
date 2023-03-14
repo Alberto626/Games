@@ -25,7 +25,7 @@ public class TTTBoardController {
     @Autowired
     private SimpleRepo2 repo;
     @GetMapping()
-    public String gameBoard( @PathVariable() String gameID) {//this id is the game id from the database
+    public String gameBoard(@PathVariable() String gameID) {//this id is the game id from the database
         if(!isNumeric(gameID) || !hasAccess(gameID)) {//check for validity, check if u have access to this game
             throw new AccessDeniedException("403 returned");
         }
@@ -91,8 +91,6 @@ public class TTTBoardController {
         if(tttWinCondition.isWinner()) {//check win condtion
             repo.conludeTTTGame(gameID2);
             tttWinCondition.getWinner();//this is the character winner
-            //TODO change the gamestatus to winner, AND update repo;
-            //winner, 
             System.out.println("Winner");
             return "TTTGameBoard";
         }
@@ -111,8 +109,8 @@ public class TTTBoardController {
         }
     }
         if(moves.size() == 9) {//tie
+            repo.conludeTTTGame(gameID2);
             return "TTTGameBoard";
-            //TODO change the status to CONCLUDED
         }
         return "TTTGameBoard";
         
