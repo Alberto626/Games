@@ -12,10 +12,8 @@ function poll() {//continously call this function to display new moves when poss
     setTimeout(poll, 5000);//5 seconds
 }
 function tableText(tableCell) {//send a post request 
-   let row = tableCell.parentNode.rowIndex + 1
-   let col = tableCell.cellIndex + 1
-
-   alert(col + 1 +  "col + " + (row + 1) + "row");
+   let row = tableCell.parentNode.rowIndex + 1;
+   let col = tableCell.cellIndex + 1;
    fetch(window.location.href, {
       method: 'POST',
       credentials: 'include',

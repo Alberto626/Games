@@ -49,6 +49,7 @@ public class SecurityConfig {
                 )
                 .logout((logout) -> logout.permitAll())
                 .sessionManagement(session -> session //prevent multiple sessions of a single user, no one user in multiple locations
+                        //TODO this doesnt work when csrf is disabled
                         .maximumSessions(1)
                         .maxSessionsPreventsLogin(true)
                 )
