@@ -38,12 +38,14 @@ function addBlock(data) {//this will create the blocks
 }
 function postRequest(gameID) {
     var url = "http://localhost:8080/join";
+    var token = document.cookie.replace(/(?:(?:^|.*;\s*)XSRF-TOKEN\s*\=\s*([^;]*).*$)|^.*$/, '$1');
     fetch(url,  {
         method: 'POST',
         credentials: 'include',
         headers: {
             Accept: "application/json",
-            "Content-type": "application/json; charset=UTF-8"
+            "Content-type": "application/json; charset=UTF-8",
+            'X-XSRF-TOKEN': token
    
          },
          body: JSON.stringify({

@@ -1,4 +1,5 @@
 displayMoves();//display the moves initially
+var token = document.cookie.replace(/(?:(?:^|.*;\s*)XSRF-TOKEN\s*\=\s*([^;]*).*$)|^.*$/, '$1');
 var table = document.getElementById("tableID");
 for (var i = 0; i < table.rows.length; i++) {
          for (var j = 0; j < table.rows[i].cells.length; j++)
@@ -19,7 +20,8 @@ function tableText(tableCell) {//send a post request
       credentials: 'include',
       headers: {
          Accept: "application/json",
-         "Content-type": "application/json; charset=UTF-8"
+         "Content-type": "application/json; charset=UTF-8",
+         'X-XSRF-TOKEN': token
 
       },
       body: JSON.stringify({
@@ -31,8 +33,12 @@ function tableText(tableCell) {//send a post request
 async function displayMoves() {//fetch api and display to gameboard
    var gameID = window.location.pathname.split('/')[2];//this is the gameid
    var url = "http://localhost:8080/game/Moves?id=" + gameID;
-   const response = await fetch(url)
-   value = await response.json()
+   const response = await fetch(url, {
+    headers: {
+        'X-XSRF-TOKEN': token
+    }
+   });
+   value = await response.json();
    for(let x = 0; x < value.length; x++) {//leg work of display
          let tableValue = x % 2 === 0 ? 'X': 'O'
          let row = value[x].boardRow - 1

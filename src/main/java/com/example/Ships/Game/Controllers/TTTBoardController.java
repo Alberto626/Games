@@ -52,8 +52,6 @@ public class TTTBoardController {
         TTTGame tttGame = repo.findTTTGameByID(gameID2);
         int colID = usermap.get("colID");
         int rowID = usermap.get("rowID");
-        System.out.println(colID);
-        System.out.println(rowID);
         MyUserPrincipal user = (MyUserPrincipal)(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 
         if(user.getID() != tttGame.getFirstPlayerID() && user.getID() != tttGame.getSecondPlayerID()) {//prevent access by players not in the game
