@@ -32,7 +32,7 @@ function tableText(tableCell) {//send a post request
 }
 async function displayMoves() {//fetch api and display to gameboard
    var gameID = window.location.pathname.split('/')[2];//this is the gameid
-   var url = "http://localhost:8080/game/Moves?id=" + gameID;
+   var url = "/game/Moves?id=" + gameID;
    const response = await fetch(url, {
     headers: {
         'X-XSRF-TOKEN': token
