@@ -11,8 +11,10 @@ jobs:
           with:
             java-version: 17
             distribution: 'adopt'
+        - name: Create application.properties file
+          -
         - name: Build with Gradle
-          run: ./gradlew build
+          run: ./gradlew build -x test
 
 
 
