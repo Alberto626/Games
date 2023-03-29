@@ -24,7 +24,7 @@ jobs:
             cd ..
             cd ..
         - name: Build with Gradle
-          run: ./gradlew build -x test
+          run: ./gradlew build
         - uses: actions/upload-artifact@v3
           with:
             name: Package
