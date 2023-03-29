@@ -11,6 +11,18 @@ jobs:
           with:
             java-version: 17
             distribution: 'adopt'
+        - name: Create application.properties file
+          run: |
+            cd src/main/resources
+            touch application.properties
+            echo spring.datasource.url= jdbc:mysql://localhost:3306/login_info >> application.properties
+            echo spring.datasource.driverClassName=com.mysql.cj.jdbc.Driver >> application.properties
+            echo spring.datasource.username= root >> application.properties
+            echo spring.datasource.password= 1234 >> application.properties
+            ls
+            cd ..
+            cd ..
+            cd ..
         - name: Build with Gradle
           run: ./gradlew build -x test
         - uses: actions/upload-artifact@v3
