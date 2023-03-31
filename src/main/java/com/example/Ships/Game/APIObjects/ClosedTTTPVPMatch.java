@@ -53,6 +53,6 @@ public class ClosedTTTPVPMatch {
     }
 
     public void setGameStatus(String gameStatus) {
-        gameStatus = gameStatus;
+        this.gameStatus = gameStatus;
     }
 }
