@@ -1,4 +1,4 @@
-displayMoves();//display the moves initially
+displayMoves(); //display the moves initially
 var token = document.cookie.replace(/(?:(?:^|.*;\s*)XSRF-TOKEN\s*\=\s*([^;]*).*$)|^.*$/, '$1');
 var table = document.getElementById("tableID");
 for (var i = 0; i < table.rows.length; i++) {
@@ -9,12 +9,14 @@ for (var i = 0; i < table.rows.length; i++) {
    }
 poll();
 function poll() {//continously call this function to display new moves when possible
+    //TODO prevent polling after the game is concluded
     displayMoves();
     setTimeout(poll, 5000);//5 seconds
 }
 function tableText(tableCell) {//send a post request 
    let row = tableCell.parentNode.rowIndex + 1;
    let col = tableCell.cellIndex + 1;
+   //TODO prevent fetch if the space is occupied
    fetch(window.location.href, {
       method: 'POST',
       credentials: 'include',

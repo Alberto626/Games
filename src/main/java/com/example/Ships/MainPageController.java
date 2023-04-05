@@ -36,7 +36,7 @@ public class MainPageController {
         model.addAttribute("botGames", botGames);
         model.addAttribute("closedPVPGames", closedPVPGames);
         model.addAttribute("yourOpenGames", yourOpenGames);
-        //add another attribute that allows the player to join their games created/join
+        //TODO add another attribute that allows the player to join their games created/join
         return "index";
     }
 }

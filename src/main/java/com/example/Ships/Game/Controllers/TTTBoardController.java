@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,18 +26,19 @@ public class TTTBoardController {
     @Autowired
     private SimpleRepo2 repo;
     @GetMapping()
-    public String gameBoard(@PathVariable() String gameID) {//this id is the game id from the database
+    public String gameBoard(@PathVariable() String gameID, Model model) {//this id is the game id from the database
         if(!isNumeric(gameID) || !hasAccess(gameID)) {//check for validity, check if u have access to this game
             throw new AccessDeniedException("403 returned");
         }
         TTTGame tttGame = repo.findTTTGameByID(Long.parseLong(gameID));
         if(tttGame.getGameStatus().equals("CONCLUDED")) {//game has concluded
-            //TODO send model object to conclude the game
+            //TODO fix this to see if a player won or the game is a tie
+            String results = "Winner is " + repo.getWinnerOfTTTMatch(Long.parseLong(gameID)); //displays the winner of the game
+            model.addAttribute("results", results);
         }
-        //TODO if the game is concluded display the winner
         return "TTTGameBoard";
     }
-    public boolean isNumeric(String gameID) {//TODO, check for whole number, and large numbers eventually
+    public boolean isNumeric(String gameID) {//TODO, check for whole number, and large numbers eventually, Add this to static class
         try {
             Integer.parseInt(gameID);
             return true;
@@ -47,40 +49,40 @@ public class TTTBoardController {
 
     }
     @PostMapping()
-    public String rules(@RequestBody(required = true) Map<String, Integer> usermap, @PathVariable String gameID) {//sent through the body
-        long gameID2 = Long.parseLong(gameID);
+    public String rules(@RequestBody(required = true) Map<String, Integer> usermap, @PathVariable String gameID, Model model) {//sent through the body
+        //TODO fix model attributes not displaying when calling post
+        long gameID2 = Long.parseLong(gameID);//this is from url
         TTTGame tttGame = repo.findTTTGameByID(gameID2);
         int colID = usermap.get("colID");
         int rowID = usermap.get("rowID");
         MyUserPrincipal user = (MyUserPrincipal)(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-
         if(user.getID() != tttGame.getFirstPlayerID() && user.getID() != tttGame.getSecondPlayerID()) {//prevent access by players not in the game
             throw new AccessDeniedException("403 returned");
         }
         if(tttGame.getGameStatus().equals("CONCLUDED")) {//game has concluded
-            System.out.println("Game has ended");
-            //TODO add model object to display the game is conluded
+            String results = "Winner is " + repo.getWinnerOfTTTMatch(gameID2);
+            model.addAttribute("results", results);
             return "TTTGameBoard";
         }
         if(tttGame.getGameStatus().equals("HOLD")) {
-            System.out.println("Cannot play without another Player");
-            //TODO add model object to display the game is hold until player joins
+            String message = "Cannot play game without another Player";
+            model.addAttribute("message",message);
             return "TTTGameBoard";
         }
         if(rowID < 1 || rowID > 3 || colID < 1 || colID > 3) {//check for validity of move location
-            System.out.println("invalid inputs");
-            //TODO throw some error to say requestbody isnt valid
+            String message = "Invalid inputs";
+            model.addAttribute("message", message);
             return "TTTGameBoard";
         }
         List<Move> moves = repo.getAllMovesByGameID(gameID2);
         if(doesMoveExistInCell(moves, rowID, colID)) { //is cell available
-            System.out.println("Space is taken");
-            //TODO add model object that says space is taken
+            String message = "Space is taken";
+            model.addAttribute("message", message);
             return "TTTGameBoard";
         }
-        if(!isPlayersTurn(tttGame, moves)) {
-            System.out.println("Not your turn");
-            //TODO add some error saying its not the players turn yet
+        if(!isPlayersTurn(tttGame, moves)) {//playersturn
+            String message = "Not your turn";
+            model.addAttribute("message", message);
             return "TTTGameBoard";
         }
         createMove(user, gameID2, colID, rowID, moves, tttGame);//IMPORTANT: create the move based on parameters given
@@ -107,11 +109,12 @@ public class TTTBoardController {
         }
     }
         if(moves.size() == 9) {//tie
+            //TODO add model to say game is concluded
             repo.conludeTTTGame(gameID2);
             return "TTTGameBoard";
         }
         return "TTTGameBoard";
-        
+        //Process
         //is cell available?
         //is it players turn
         //create move

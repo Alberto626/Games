@@ -1,5 +1,4 @@
 package com.example.Ships.Game.Controllers;
-
 import com.example.Ships.Game.Entities.TTTGame;
 import com.example.Ships.Repo.SimpleRepo2;
 import com.example.Ships.Service.UserPrincipal.MyUserPrincipal;
@@ -16,14 +15,14 @@ public class JoinController {
     @Autowired
     private SimpleRepo2 repo;
     @PostMapping()
-    public String joinGame(@RequestParam long gameID) {//TODO fix this, no clue why its breaking
+    public String joinGame(@RequestParam long gameID) {
         if(isGameAvailable(gameID)) {
             MyUserPrincipal user = (MyUserPrincipal)(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
             repo.updateTTTGameWithNewPlayer(gameID, user.getID());
             System.out.println("join worked");
             return "redirect:/TTT/" + gameID;
         }
-        //TODO add model message saying this doesn't work
+        //TODO add model message saying Player cannot join
         System.out.println("join didn't work");
         return "redirect:/";
     }

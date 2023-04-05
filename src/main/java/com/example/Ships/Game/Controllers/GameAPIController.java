@@ -17,7 +17,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/game", produces = "application/json")
-public class GameAPI {
+public class GameAPIController {
     @Autowired
     private SimpleRepo2 repo;
 

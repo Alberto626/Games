@@ -87,7 +87,7 @@ public class SimpleRepo2 implements TutorialRepo{
         String sql = "Select * from ttt_game where FirstPlayerID = ? order by id desc limit 1;";
         return template.queryForObject(sql, new Object[]{tttGame.getFirstPlayerID()}, new TTTRowMapper());
     }
-    public TTTGame findTTTGameByID(long gameID) { //TODO fix name to GET not find
+    public TTTGame findTTTGameByID(long gameID) {
         String sql = "Select * from ttt_game where id = ?";
         try{
             return template.queryForObject(sql, new Object[]{gameID}, new TTTRowMapper());
@@ -128,11 +128,10 @@ public class SimpleRepo2 implements TutorialRepo{
 
         });
     }
-    public void conludeTTTGame(long tttGameID) {//TODO, update the game status of the game to conluded meaning no more moves and be implemented
+    public void conludeTTTGame(long tttGameID) {
         String sql = "Update ttt_game set GameStatus = 'CONCLUDED' where id = ?";
         template.update(sql, tttGameID);
     }
-    //USED FOR DIFFERENT PURPOSE, isnt used anymore
     public List<Move> getAllMovesByGameID(long gameID) {
         String sql = "Select * from moves where GameID = ?";
         List<Move> x = template.query(sql, new Object[]{gameID}, new MoveRowMapper());
@@ -148,7 +147,7 @@ public class SimpleRepo2 implements TutorialRepo{
         }
         return true;
     }
-    public void updateTTTGameWithNewPlayer(long gameID, long playerID) {//TODO add second player
+    public void updateTTTGameWithNewPlayer(long gameID, long playerID) {
         String sql = "Update ttt_game set SecondPlayerID = ?, GameStatus = 'IN PROGRESS' where id = ?";
         template.update(sql, playerID, gameID);
     }
@@ -188,6 +187,14 @@ public class SimpleRepo2 implements TutorialRepo{
                 "where SecondPlayerID is Null and GameType = \"PVP\" AND FirstPlayerID = ?;";
 
         return template.query(sql, new Object[]{playerID}, new TTTRowMapper());
+    }
+    public String getWinnerOfTTTMatch(long gameID) { //IMPORTANT this already assumes the game is already over
+        String sql = "Select IFNULL(Username, 'BOT') from moves\n" + //if name of object is null, then  its a bot Game
+                "left join login on\n" +
+                " moves.PlayerID = login.Userid\n" +
+                " where GameID = ? Order by id Desc Limit 1;";
+
+        return template.queryForObject(sql, new Object[]{gameID}, String.class);//Yes this works
     }
 
     public String toString() {
