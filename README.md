@@ -25,6 +25,3 @@ Created login/register system using Spring Security
 
 With the use of Spring controllers, we were able to create restful apis that allowed a more dynamic and changeable frontend. This includes a very basic implementation of polling to constantly survey any changes a player makes and display it during its next rotation. 
 ![](src/main/resources/static/gifs/changestofront.gif)
-
-## For your Viewing
-http://rockswithsocks.com
